@@ -9,7 +9,7 @@ let io;
 export const initSocket = (server) => {
   io = new Server(server, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: "https://nova-chat-chi.vercel.app",
       methods: ["GET", "POST", "PUT", "DELETE"],
       credentials: true,
     },
@@ -17,7 +17,6 @@ export const initSocket = (server) => {
 
   // Connect io with Client ( client -> socket.io )
   io.on("connection", (socket) => {
-
     // get user data from client
     socket.on("registerUser", (userId) => {
       userSocketMap[userId] = socket.id;
@@ -28,7 +27,6 @@ export const initSocket = (server) => {
 
     // Disconnect user
     socket.on("disconnect", () => {
-
       for (const userId in userSocketMap) {
         if (userSocketMap[userId] === socket.id) {
           delete userSocketMap[userId];
@@ -40,7 +38,6 @@ export const initSocket = (server) => {
 
     // Set typing / stop-typing
     socket.on("typing", ({ senderId, receiverId }) => {
-
       const receiverSocketId = getReceiverSocketId(receiverId);
 
       if (receiverSocketId) {
@@ -72,12 +69,12 @@ export const initSocket = (server) => {
 
       const senderSocketId = getReceiverSocketId(senderId);
 
-     if (senderSocketId) {
-       io.to(senderSocketId).emit("messagesSeen", {
-         senderId,
-         receiverId,
-       });
-     }
+      if (senderSocketId) {
+        io.to(senderSocketId).emit("messagesSeen", {
+          senderId,
+          receiverId,
+        });
+      }
     });
   });
 
