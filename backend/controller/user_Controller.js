@@ -112,12 +112,12 @@ export const userLogin = async (req, res) => {
     });
 
     // token save into cookie
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 2 * 24 * 60 * 60 * 1000,
-    });
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    maxAge: 2 * 24 * 60 * 60 * 1000,
+  });
 
     //return response success ...
     return res.status(200).json({
@@ -143,11 +143,11 @@ export const userLogin = async (req, res) => {
 
 export const userLogout = async (req, res) => {
   try {
-    res.clearCookie("token", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-    });
+   res.clearCookie("token", {
+     httpOnly: true,
+     secure: true,
+     sameSite: "none",
+   });
 
     return res.status(200).json({
       success: true,
