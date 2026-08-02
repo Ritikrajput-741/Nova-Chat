@@ -1,6 +1,58 @@
-services:
-  redis:
-    image: redis
-    ports:
-      - 6379:6379
+version: "3.9"
 
+services:
+
+  backend:
+    build: ./backend
+    container_name: novaApp_backend
+
+    env_file:
+      - ./backend/.env
+
+    ports:
+      - "8081:8081"
+
+    depends_on:
+      - mongo
+      - redis
+
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build: ./frontend
+    container_name: novaApp_frontend
+
+    env_file:
+      - ./frontend/.env
+
+    ports:
+      - "5173:5173"
+
+    depends_on:
+      - backend
+
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+  mongo:
+    image: mongo:latest
+    container_name: novaApp_mongodb
+
+    ports:
+      - "27017:27017"
+
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    container_name: novaApp_redis
+
+    ports:
+      - "6379:6379"
+
+volumes:
+  mongo_data:
